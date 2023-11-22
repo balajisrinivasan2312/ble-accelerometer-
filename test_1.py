@@ -9,7 +9,7 @@ class Scan_attribute(DefaultDelegate):
     def handleDiscovery(self, dev, isNewDev, isNewData):
         if isNewDev:
             print(f"Discovered device {dev.addr}")
-        if dev.addr == 'YOUR_BLE_TAG_MAC_ADDRESS':
+        if dev.addr == '0x009078563412':
             accel_data = self.parse_acceleration_data(dev)
             print(f"Accelerometer Data: {accel_data}")
 
