@@ -24,3 +24,7 @@ Connect to the Accelerometer:
 
 Establish a connection to the BLE accelerometer using the device's unique identifier (UUID).
 Read Accelerometer Data:
+Once connected, read data from the accelerometer using the GATT characteristics provided by the device.
+Data Processing:
+
+Process the raw accelerometer data based on your application's requirements. This might involve converting raw sensor readings into meaningful units or performing additional filtering.
