@@ -1,45 +1,42 @@
 from bluepy.btle import Scanner, DefaultDelegate
 import struct
-import time
+import time #this is to import all the library files necessary for the sensor interaction
 
 class Scan_attribute(DefaultDelegate):
-    def __init__(self):
-        DefaultDelegate.__init__(self)
+    def __init__(read):
+        DefaultDelegate.__init__(read) #this piece of code is used to scan the sensor details into the gateway module
 
-    def handleDiscovery(self, dev, isNewDev, isNewData):
-        if isNewDev:
+    def handleDiscovery(read, dev, isNewDev, isNewData):
+        if isNewDev: #to find the ID of the Tag as there will be various ble tags in the range of the gateway
             print(f"Discovered device {dev.addr}")
-        if dev.addr == '0x009078563412':
-            accel_data = self.parse_acceleration_data(dev)
-            print(f"Accelerometer Data: {accel_data}")
+        if dev.addr == '0x009078563412': #MAC address of the sensor sensed
+            accel_data = read.parse_acceleration_data(dev)
+            print(f"Accelerometer Data: {accel_data}") #the accel data is the complete raw data from the accelerometer sensor when moved or not moved
 
             # Check if the tag is moving or stationary based on accelerometer data
-            is_moving = self.is_tag_moving(accel_data)
+            is_moving = read.is_tag_moving(accel_data) #to check the data when the sensor detects the object moving 
 
             if not is_moving:
                 # If the tag is stationary, interact with the iBeacon
-                self.interact_with_ibeacon()
+                read.interact_with_ibeacon() #when not in motion the sensor send arbituary signals to the gateway about being under the threshold value
 
-    def parse_acceleration_data(self, dev):
-        accel_data_raw = dev.getValueText(0x08)
+    def parse_acceleration_data(read, dev):
+        accel_data_raw = dev.getValueText(0x08) #the values obtained from the accelerometer through parsing data in a timely manner
             if accel_data_raw:
-                accel_data = struct.unpack('hhh', bytes.fromhex(accel_data_raw))
+                accel_data = struct.unpack('hhh', bytes.fromhex(accel_data_raw)) #the unpack function in the python breaks the raw data into 3 various axis datae of 16 bits
                 return accel_data
-        return None
+        return None #when the accelerometer tag is in idle condition, the sensor just gives null value as the axis doesn't move
 
-    def is_tag_moving(self, accel_data):
-        # Implement your logic to determine if the tag is moving based on accelerometer data
-        # This can be based on a threshold, variance, or any other criteria
-        # For simplicity, let's assume the tag is moving if the acceleration on any axis is above a threshold
+    def is_tag_moving(read, accel_data):
+        
         threshold = 100
-        return any(abs(accel) > threshold for accel in accel_data)
+        return any(abs(accel) > threshold for accel in accel_data) #the abs command provides the absolute value of the accelerometer data and with the calculated null value data which equates to the threshold value
 
-    def interact_with_ibeacon(self):
+    def interact_with_ibeacon(read):
         # Implement your logic to interact with the iBeacon
         # This could include sending data to the iBeacon, triggering actions, etc.
         print("Interacting with iBeacon")
 
-# Replace 'YOUR_BLE_TAG_MAC_ADDRESS' with the MAC address of your BLE tag
 scanner = Scanner().withDelegate(Scan_attribute())
 
 while True:
