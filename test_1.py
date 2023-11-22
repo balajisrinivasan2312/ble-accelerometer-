@@ -32,11 +32,10 @@ class Scan_attribute(DefaultDelegate):
         threshold = 100
         return any(abs(accel) > threshold for accel in accel_data) #the abs command provides the absolute value of the accelerometer data and with the calculated null value data which equates to the threshold value
 
-    def interact_with_ibeacon(read):
-        # Implement your logic to interact with the iBeacon
-        # This could include sending data to the iBeacon, triggering actions, etc.
-        print("Interacting with iBeacon")
-
+    def interact_with_ibeacon(read,threshold):
+        if threshold != NULL:
+            print("Interacting with iBeacon") #when the threshold value is not null value then there is an interaction between the sensor and the gateway
+            
 scanner = Scanner().withDelegate(Scan_attribute())
 
 while True:
